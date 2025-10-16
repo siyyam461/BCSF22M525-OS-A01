@@ -1,7 +1,7 @@
+cat > src/myfilefunctions.c <<'EOF'
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stddef.h>
 #include "../include/myfilefunctions.h"
 
 /* portable strdup replacement */
@@ -21,6 +21,7 @@ int wordCount(FILE* file, int* lines, int* words, int* chars) {
     int l = 0, w = 0, c = 0;
     int inword = 0;
 
+    /* rewind to start */
     rewind(file);
     while (fgets(buf, sizeof(buf), file)) {
         l++;
@@ -34,6 +35,7 @@ int wordCount(FILE* file, int* lines, int* words, int* chars) {
             }
         }
     }
+    /* if last token ended without whitespace, count it */
     if (inword) w++;
 
     *lines = l;
@@ -61,6 +63,7 @@ int mygrep(FILE* fp, const char* search_str, char*** matches) {
                 capacity *= 2;
                 char **tmp = realloc(arr, capacity * sizeof(char*));
                 if (!tmp) {
+                    /* cleanup on realloc failure */
                     for (int i = 0; i < count; ++i) free(arr[i]);
                     free(arr);
                     return -1;
@@ -68,7 +71,7 @@ int mygrep(FILE* fp, const char* search_str, char*** matches) {
                 arr = tmp;
             }
             arr[count] = my_strdup(line);
-            if (!arr[count]) {
+            if (!arr[count]) { /* cleanup on strdup failure */
                 for (int i = 0; i < count; ++i) free(arr[i]);
                 free(arr);
                 return -1;
@@ -80,3 +83,5 @@ int mygrep(FILE* fp, const char* search_str, char*** matches) {
     *matches = arr;
     return count;
 }
+EOF
+
