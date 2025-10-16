@@ -48,3 +48,32 @@ clean:
 	-rm -rf $(BIN_DIR)
 	-rm -rf $(LIB_DIR)
 	-rm -rf $(OBJ_DIR)
+
+# Install/uninstall targets for man pages and binaries
+PREFIX ?= /usr/local
+BINDIR ?= $(PREFIX)/bin
+MANDIR ?= $(PREFIX)/share/man
+
+.PHONY: install uninstall
+
+install: all
+	@echo "Installing binaries and man pages to $(PREFIX) (sudo required)"
+	@mkdir -p $(DESTDIR)$(BINDIR)
+	@mkdir -p $(DESTDIR)$(MANDIR)/man1
+	@mkdir -p $(DESTDIR)$(MANDIR)/man3
+	# install the client binary (install static as 'client' name)
+	install -m 0755 bin/client_static $(DESTDIR)$(BINDIR)/client
+	# install man pages
+	install -m 0644 man/man1/client.1 $(DESTDIR)$(MANDIR)/man1/client.1
+	install -m 0644 man/man3/mystrlen.3 $(DESTDIR)$(MANDIR)/man3/mystrlen.3
+	install -m 0644 man/man3/mygrep.3 $(DESTDIR)$(MANDIR)/man3/mygrep.3
+	@echo "Installation complete. You may need to run 'mandb' as root to update man cache."
+
+uninstall:
+	@echo "Removing installed files from $(PREFIX)"
+	-rm -f $(DESTDIR)$(BINDIR)/client
+	-rm -f $(DESTDIR)$(MANDIR)/man1/client.1
+	-rm -f $(DESTDIR)$(MANDIR)/man3/mystrlen.3
+	-rm -f $(DESTDIR)$(MANDIR)/man3/mygrep.3
+	@echo "Uninstall complete."
+
