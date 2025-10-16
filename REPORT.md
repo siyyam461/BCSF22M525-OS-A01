@@ -56,3 +56,17 @@ Q3) When you run `nm` on client_static, are symbols like `mystrlen` present? Wha
 A3) `nm` on `bin/client_static` will show `mystrlen` as a defined symbol (not undefined). That tells us that static linking copies the required object code from the static archive into the final executable, so the executable contains the actual implementations of those functions. Unlike dynamic linking (which leaves undefined symbols resolved at runtime), static linking embeds code into the binary.
 
 
+
+## ✅ Feature 3: Static Library (Completed)
+
+- Branch: static-build (merged into main)
+- Library: lib/libmyutils.a
+- Executable: bin/client_static
+- Build: `make` (top-level) -> builds library and client_static
+
+### Feature-3 Verification
+- `ar -t lib/libmyutils.a` lists: mystrfunctions.o, myfilefunctions.o
+- `nm -C bin/client_static` shows defined symbols: mystrlen, mygrep, wordCount
+- Tag: v0.2.1-static
+- Release: v0.2.1-static (assets: lib/libmyutils.a, bin/client_static)
+
