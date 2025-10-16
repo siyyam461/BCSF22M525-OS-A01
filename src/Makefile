@@ -2,17 +2,18 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c99 -I../include -g
 SRCS = $(wildcard *.c)
-OBJS = $(SRCS:.c=.o)
+# objs are placed in ../obj with same basename
 OBJDIR = ../obj
+OBJS = $(patsubst %.c,$(OBJDIR)/%.o,$(SRCS))
 
 .PHONY: all clean
 
 all: $(OBJS)
 	@echo "src: built objects: $(OBJS)"
 
-%.o: %.c
+$(OBJDIR)/%.o: %.c
 	@mkdir -p $(OBJDIR)
-	$(CC) $(CFLAGS) -c $< -o $(OBJDIR)/$@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	@echo "src: cleaning objects"
