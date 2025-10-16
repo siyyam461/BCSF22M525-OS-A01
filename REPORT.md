@@ -89,3 +89,17 @@ A2) The static client embeds the implementations of all used functions (copied f
 Q3) What is LD_LIBRARY_PATH and why did we need it?
 A3) `LD_LIBRARY_PATH` is an environment variable that adds directories where the dynamic loader searches for shared libraries at runtime. Because our custom `lib/libmyutils.so` is in a nonstandard location, we temporarily set `LD_LIBRARY_PATH=$(pwd)/lib` so the loader can find it. This shows the loader’s responsibility: it locates and maps shared libraries into the process address space; if they’re not in standard paths (e.g., /usr/lib), the user or system must provide the path.
 
+
+## ✅ Feature 5: Man Pages & Install Target (Completed)
+
+- Branch: manpages (merged into main)
+- Man pages added:
+  - man/man1/client.1
+  - man/man3/mystrlen.3
+  - man/man3/mygrep.3
+- Install target: `sudo make install` installs:
+  - binary -> /usr/local/bin/client
+  - man pages -> /usr/local/share/man/man1 and /usr/local/share/man/man3
+- Uninstall target removes installed files.
+- Verification: `man client`, `man 3 mystrlen`, and running `client` after installation.
+
