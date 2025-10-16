@@ -1,0 +1,15 @@
+.\" Manpage for mygrep (section 3)
+.TH mygrep 3 "October 2025" "myutils 0.1"
+.SH NAME
+mygrep \- search for substring matches in a file
+
+.SH SYNOPSIS
+.B int mygrep(FILE *f, const char *pattern, char ***matches)
+
+.SH DESCRIPTION
+mygrep reads lines from the provided file pointer and returns lines that contain the given substring pattern.
+It allocates an array of matched lines (returned via \fImatches\fP) and returns the count of matches.
+Caller is responsible for freeing returned memory.
+
+.SH AUTHOR
+muhammad siyyam <siyyam461@gmail.com>
