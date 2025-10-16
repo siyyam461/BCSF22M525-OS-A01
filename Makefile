@@ -1,28 +1,23 @@
-CC = gcc
-CFLAGS = -Wall -Wextra -std=c99 -Iinclude -g
-SRCDIR = src
-OBJDIR = obj
-BINDIR = bin
-SOURCES = $(wildcard $(SRCDIR)/*.c)
-OBJECTS = $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SOURCES))
-TARGET = $(BINDIR)/client
+# Top-level Makefile - recursive approach
+SRC_DIR = src
+OBJ_DIR = obj
+BIN_DIR = bin
+INCLUDE = include
 
-.PHONY: all clean
+.PHONY: all clean src build
 
-all: $(TARGET)
+all: src build
 
-$(OBJDIR):
-	mkdir -p $(OBJDIR)
+# Recursive call to src/Makefile to produce .o files in ../obj
+src:
+	$(MAKE) -C $(SRC_DIR) all
 
-$(BINDIR):
-	mkdir -p $(BINDIR)
-
-$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(TARGET): $(OBJECTS) | $(BINDIR)
-	$(CC) $(CFLAGS) $(OBJECTS) -o $(TARGET)
+# Link objects into binary
+build:
+	@mkdir -p $(BIN_DIR)
+	$(CC) -Wall -Wextra -std=c99 -I$(INCLUDE) $(OBJ_DIR)/*.o -o $(BIN_DIR)/client
 
 clean:
-	rm -rf $(OBJDIR) $(BINDIR)
+	$(MAKE) -C $(SRC_DIR) clean
+	-rm -rf $(BIN_DIR)
 
