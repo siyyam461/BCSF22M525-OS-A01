@@ -70,3 +70,22 @@ A3) `nm` on `bin/client_static` will show `mystrlen` as a defined symbol (not un
 - Tag: v0.2.1-static
 - Release: v0.2.1-static (assets: lib/libmyutils.a, bin/client_static)
 
+
+## ✅ Feature 4: Dynamic Library (Completed)
+
+- Branch: dynamic-build (merged into main)
+- Library: lib/libmyutils.so
+- Executable: bin/client_dynamic
+- Build: `make` (top-level) -> builds shared lib and client_dynamic
+
+### Feature-4 Report Questions & Answers
+
+Q1) What is Position-Independent Code (-fPIC) and why is it required?
+A1) Position-Independent Code (PIC, produced by -fPIC) generates machine code that can be loaded at any memory address without modification. For shared libraries the OS can map the same library into different process address spaces at different addresses; PIC avoids absolute addresses so relocation is minimal and safe. Without PIC, shared libraries may require runtime relocation fixes and cannot be safely shared across processes as efficiently.
+
+Q2) Explain the difference in file size between static and dynamic clients. Why?
+A2) The static client embeds the implementations of all used functions (copied from static lib) into the executable, making it large. The dynamic client only contains references to external symbols and loader information; the actual code lives in the shared .so, so the executable is smaller. The .so holds the function code, enabling sharing across processes and reducing binary size.
+
+Q3) What is LD_LIBRARY_PATH and why did we need it?
+A3) `LD_LIBRARY_PATH` is an environment variable that adds directories where the dynamic loader searches for shared libraries at runtime. Because our custom `lib/libmyutils.so` is in a nonstandard location, we temporarily set `LD_LIBRARY_PATH=$(pwd)/lib` so the loader can find it. This shows the loader’s responsibility: it locates and maps shared libraries into the process address space; if they’re not in standard paths (e.g., /usr/lib), the user or system must provide the path.
+
